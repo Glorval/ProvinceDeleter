@@ -74,8 +74,13 @@ void main() {
 		}
 		fclose(definitionFile);
 		fclose(definitionOutput);
-		
+
 	}
-	printf("\n\nRemove condition: %d", remove("definition.csv~"));
+	int errorRemoving = remove("definition.csv~");
+	if (errorRemoving) {
+		printf("\n\nRemove condition: %d\n", errorRemoving);
+		printf("Error for removal of file: %s\n", strerror(errno));
+	}
 	
+
 }
