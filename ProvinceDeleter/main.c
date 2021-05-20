@@ -1,92 +1,81 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <string.h>
 
-
 void main() {
-	FILE* definitionFile = fopen("definition.csv", "r");
-	if (definitionFile == NULL) {
-		printf("Error opening definition.csv");
-		char fucc = 0;
-		fucc = getc(&fucc);
-		return;
-	}
-	FILE* definitionOutput = fopen("definitionNew.csv", "w");
-	
+	char breaker[] = ";";
 
-
-	printf("Glorwyn's Province Deleter.\nEnter ID of province to delete:   ");
+	printf("Thank you for using Glorwyn's Province Deleter.\n:3\nRemember, put in IDs in highest to lowest.\n\n");
 	int provinceIDToDelete;
-	scanf("%d", &provinceIDToDelete);
-	char currentLine[100];
-	int id = 0;
-	int searching = 1;
-	while (1) {	
-		if (fgets(currentLine, 99, definitionFile) == NULL) {
+	while (1) {
+		FILE* definitionFile = fopen("definition.csv", "r");
+		if (definitionFile == NULL) {
+			printf("Error opening definition.csv");
+			char fucc = 0;
+			fucc = getc(&fucc);
+			return;
+		}
+		FILE* definitionOutput = fopen("definition.csv~", "w");
+
+
+		printf("Enter province ID to remove: ");
+		scanf("%d", &provinceIDToDelete);
+		if (provinceIDToDelete < 0) {
+			printf("Done. Thank you. Let me know of any problems and have a nice day.");
 			break;
 		}
-
-		if (searching) {
-			int c = 0;
-			char currentID[10];
-			while (1) {
-				if (currentLine[c] != ';') {
-					currentID[c] = currentLine[c];
-					c++;
-				}else {
-					currentID[c] = '\0';
-					break;
-				}				
+		char currentLine[100];
+		int searching = 1;
+		int currentOffset = 1;
+		while (1) {
+			if (fgets(currentLine, 99, definitionFile) == NULL) {
+				break;
 			}
 
-			if (atoi(currentID) == provinceIDToDelete) {
-				printf("\nFound province to remove.\n");
-				searching = 0;
-				continue;
-			}else {
-				fputs(currentLine, definitionOutput);
-			}
-		}
-		else {
-			int c = 0;
-			char currentID[10];
-			while (1) {
-				if (currentLine[c] != ';') {
-					currentID[c] = currentLine[c];
-					c++;
-				}else {
-					currentID[c] = '\0';
-					break;
+			if (searching) {
+				int c = 0;
+				char* currentID;
+				currentID = strtok(currentLine, breaker);
+				if (atoi(currentID) == provinceIDToDelete) {
+					printf("Found province to remove.\n\n");
+					searching = 0;
+					continue;
+				}
+				else {
+					fputs(currentLine, definitionOutput);
+					fputc(';', definitionOutput);
+					fputs(strtok(NULL, ""), definitionOutput);
 				}
 			}
-			int newID = atoi(currentID);
-			int ImLazyFlag = 0;
-			if (newID % 10 == 0 && currentID[0] == '1') {
-				ImLazyFlag = 1;
+			else {
+				int c = 0;
+				char* currentID;
+				currentID = strtok(currentLine, ";");
+				int newID = atoi(currentID);
+				newID = newID - currentOffset;
+				_itoa(newID, currentID, 10);
+				fputs(currentID, definitionOutput);
+				fputc(';', definitionOutput);
+				fputs(strtok(NULL, ""), definitionOutput);
 			}
-			newID--;
-			_itoa(newID, &currentID, 10);
-			
-			c = 0;
-			while (1) {
-				if (currentID[c] != '\0') {
-					currentLine[c] = currentID[c];
-				}else {
-					if (ImLazyFlag) {
-						while (currentLine[c] != '\0') {
-							currentLine[c] = currentLine[c + 1];
-							c++;
-						}
-					}
-					break;
-				}
-				c++;
-			}
-			fputs(currentLine, definitionOutput);
+
 		}
+		fclose(definitionFile);
+		fclose(definitionOutput);
+		definitionFile = fopen("definition.csv~", "r");
+		definitionOutput = fopen("definition.csv", "w");
+		while (1) {
+			char line[100];
+			if (fgets(&line, 99, definitionFile) == NULL) {
+				break;
+			}
+			fputs(line, definitionOutput);
+		}
+		fclose(definitionFile);
+		fclose(definitionOutput);
 		
-
 	}
+	printf("\n\nRemove condition: %d", remove("definition.csv~"));
+	
 }
