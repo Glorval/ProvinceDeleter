@@ -81,6 +81,8 @@ void main() {
 		printf("\n\nRemove condition: %d\n", errorRemoving);
 		printf("Error for removal of file: %s\n", strerror(errno));
 	}
-	
+
+
+	getche();
 
 }
