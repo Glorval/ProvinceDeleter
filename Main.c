@@ -19,7 +19,7 @@ void main() {
 		FILE* definitionOutput = fopen("definition.csv~", "w");
 
 
-		printf("Enter province ID to remove: ");
+		printf("Enter province ID to remove (-1 to end): ");
 		scanf("%d", &provinceIDToDelete);
 		if (provinceIDToDelete < 0) {
 			printf("Done. Thank you. Let me know of any problems and have a nice day.");
